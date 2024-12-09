@@ -1,5 +1,6 @@
 package EzLookAndBook.user.entity;
 
+import EzLookAndBook.serviceProvider.entity.BusinessVerification;
 import EzLookAndBook.user.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

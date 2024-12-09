@@ -22,7 +22,7 @@ import java.util.List;
 @EqualsAndHashCode
 @Table(name = "users")
 
-public class User implements UserDetails {
+public class Client implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
