@@ -53,7 +53,7 @@ public class AccessController {
     }
 
     @PostMapping("/admin-register")
-    public ResponseEntity<AdminDTO> registerAdmin(@Valid @RequestBody Admin admin) {
+    public ResponseEntity<AdminDTO> registerAdmin(@RequestBody Admin admin) {
         AdminDTO createAdminDTO = accountService.createAdmin(admin);
 
         return ResponseEntity.ok(createAdminDTO);
@@ -61,7 +61,7 @@ public class AccessController {
 
     @PostMapping("/admin-login")
     ResponseEntity<String> loginAdmin(@Valid @RequestBody LoginRequest admin) {
-        String jwtToken = accountService.ownerAuthorization(admin);
+        String jwtToken = accountService.adminAuthorization(admin);
 
         return ResponseEntity.ok(jwtToken);
     }

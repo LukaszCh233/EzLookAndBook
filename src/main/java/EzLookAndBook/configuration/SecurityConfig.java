@@ -34,7 +34,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/user/**", "/admin/**", "/common/**", "/access/**")
+                        .ignoringRequestMatchers("/owner/**","/client/**", "/admin/**", "/common/**", "/access/**")
                 )
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/client/**").hasAnyRole(Role.CLIENT.name())

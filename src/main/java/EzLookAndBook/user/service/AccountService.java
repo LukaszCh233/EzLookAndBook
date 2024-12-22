@@ -69,13 +69,13 @@ public class AccountService {
         String encodedPassword = passwordEncoder.encode(admin.getPassword());
         admin.setPassword(encodedPassword);
 
-        return entityMapper.mapAdminToAdminDTO(admin);
+        return entityMapper.mapAdminToAdminDTO(adminRepository.save(admin));
     }
     public String adminAuthorization(LoginRequest loginRequest) {
         Admin registeredAdmin = adminRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() ->
                 new EntityNotFoundException("Admin not exist"));
 
-        if (passwordEncoder.matches(loginRequest.getPassword(), registeredAdmin.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), registeredAdmin.getPassword())) {
 
             throw new UnauthorizedOperationException("Incorrect password or email");
         }
@@ -86,7 +86,7 @@ public class AccountService {
         Owner registeredOwner = ownerRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() ->
                 new EntityNotFoundException("Owner not exist"));
 
-        if (passwordEncoder.matches(loginRequest.getPassword(), registeredOwner.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), registeredOwner.getPassword())) {
 
             throw new UnauthorizedOperationException("Incorrect password or email");
         }
@@ -97,7 +97,7 @@ public class AccountService {
         Client registeredClient = clientRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() ->
                 new EntityNotFoundException("Client not exist"));
 
-        if (passwordEncoder.matches(loginRequest.getPassword(), registeredClient.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), registeredClient.getPassword())) {
             throw new UnauthorizedOperationException("Incorrect password or email");
         }
         return jwtService.generateToken(registeredClient);
