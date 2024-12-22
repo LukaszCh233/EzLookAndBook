@@ -1,6 +1,6 @@
 package EzLookAndBook.user.entity;
 
-import EzLookAndBook.serviceProvider.entity.BusinessVerification;
+import EzLookAndBook.serviceProvider.entity.BusinessProfile;
 import EzLookAndBook.user.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -37,7 +37,7 @@ public class Owner implements UserDetails {
     private String password;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "business_verification_id", referencedColumnName = "id")
-    private BusinessVerification businessVerification;
+    private BusinessProfile businessProfile;
     private Role role;
 
     @Override
