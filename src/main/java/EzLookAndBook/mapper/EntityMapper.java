@@ -1,11 +1,7 @@
 package EzLookAndBook.mapper;
 
-import EzLookAndBook.serviceProvider.dto.BusinessVerificationDTO;
-import EzLookAndBook.serviceProvider.dto.ServiceOpinionDTO;
-import EzLookAndBook.serviceProvider.dto.ServiceProviderDTO;
-import EzLookAndBook.serviceProvider.entity.BusinessVerification;
-import EzLookAndBook.serviceProvider.entity.ServiceOpinion;
-import EzLookAndBook.serviceProvider.entity.ServiceProvider;
+import EzLookAndBook.serviceProvider.dto.*;
+import EzLookAndBook.serviceProvider.entity.*;
 import EzLookAndBook.user.dto.AdminDTO;
 import EzLookAndBook.user.dto.ClientDTO;
 import EzLookAndBook.user.dto.OwnerDTO;
@@ -41,26 +37,63 @@ public class EntityMapper {
                 .collect(Collectors.toList());
     }
 
-    public BusinessVerificationDTO mapBusinessVerificationToBusinessVerificationDTO(BusinessVerification businessVerification) {
-        return new BusinessVerificationDTO(businessVerification.getId(), businessVerification.getBusinessName(),
-                businessVerification.getBusinessAddress(), businessVerification.getCity(),
-                businessVerification.getPhoneNumber(), businessVerification.getOwner().getName(),
-                businessVerification.getOwner().getLastName(), businessVerification.getOwner().getEmail(),
-                businessVerification.getTaxId(), businessVerification.getServiceCategory().getName());
+    public BusinessProfileDTO mapBusinessProfileToBusinessProfileDTO(BusinessProfile businessProfile) {
+        return new BusinessProfileDTO(businessProfile.getId(), businessProfile.getBusinessName(),
+                businessProfile.getBusinessAddress(), businessProfile.getCity(),
+                businessProfile.getPhoneNumber(), businessProfile.getOwner().getName(),
+                businessProfile.getOwner().getLastName(), businessProfile.getOwner().getEmail(),
+                businessProfile.getTaxId(), businessProfile.getServiceCategory().getName());
     }
 
-    public List<BusinessVerificationDTO> mapBusinessVerificationListToBusinessVerificationListDTO(List<BusinessVerification> businessVerificationList) {
-        return businessVerificationList.stream()
-                .map(this::mapBusinessVerificationToBusinessVerificationDTO)
+    public BusinessDTO mapBusinessVerificationToBusinessDTO(BusinessProfile businessProfile) {
+        return new BusinessDTO(businessProfile.getId(), businessProfile.getBusinessName());
+    }
+
+    public List<BusinessProfileDTO> mapBusinessProfileListToBusinessProfileListDTO(List<BusinessProfile> businessProfileList) {
+        return businessProfileList.stream()
+                .map(this::mapBusinessProfileToBusinessProfileDTO)
                 .collect(Collectors.toList());
     }
-    public OwnerDTO mapOwnerToOwnerDTO(Owner owner) {
-        return new OwnerDTO(owner.getName(), owner.getLastName(),owner.getEmail());
+
+    public List<BusinessDTO> mapBusinessVerificationListToBusinessListDTO(List<BusinessProfile> businessProfileList) {
+        return businessProfileList.stream()
+                .map(this::mapBusinessVerificationToBusinessDTO)
+                .collect(Collectors.toList());
     }
+
+    public OwnerDTO mapOwnerToOwnerDTO(Owner owner) {
+        return new OwnerDTO(owner.getName(), owner.getLastName(), owner.getEmail());
+    }
+
     public ClientDTO mapClientToClientDTO(Client client) {
         return new ClientDTO(client.getName(), client.getEmail());
     }
+
     public AdminDTO mapAdminToAdminDTO(Admin admin) {
         return new AdminDTO(admin.getName(), admin.getEmail());
+    }
+
+    public ServiceCategoryDTO mapServiceCategoryToServiceCategoryDTO(ServiceCategory serviceCategory) {
+        return new ServiceCategoryDTO(serviceCategory.getName());
+    }
+
+    public List<ServiceCategoryDTO> mapServiceCategoryListToServiceCategoryListDTO(List<ServiceCategory> serviceCategoryList) {
+        return serviceCategoryList.stream()
+                .map(this::mapServiceCategoryToServiceCategoryDTO)
+                .collect(Collectors.toList());
+    }
+
+    public ServiceOptionDTO mapServiceOptionToServiceOptionDTO(ServiceOption serviceOption) {
+        return new ServiceOptionDTO(serviceOption.getName(), serviceOption.getDescription(), serviceOption.getPrice());
+    }
+
+    public List<ServiceOptionDTO> mapServiceOptionListToServiceOptionListDTO(List<ServiceOption> serviceOptionList) {
+        return serviceOptionList.stream()
+                .map(this::mapServiceOptionToServiceOptionDTO)
+                .collect(Collectors.toList());
+    }
+
+    public AvailabilityDTO mapAvailabilityToAvailabilityDTO(Availability availability) {
+        return new AvailabilityDTO(availability.getAvailableDate(), availability.getAvailableHours());
     }
 }
