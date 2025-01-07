@@ -22,4 +22,8 @@ public class Availability {
     private LocalDateTime availableDate;
     @ElementCollection
     private List<LocalTime> availableHours;
+    @ManyToOne
+    @JoinColumn(name = "service_option_id", nullable = false)
+    private ServiceOption serviceOption;
+
 }

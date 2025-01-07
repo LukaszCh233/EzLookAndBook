@@ -1,4 +1,4 @@
 package EzLookAndBook.serviceProvider.dto;
 
-public record ServiceCategoryDTO() {
+public record ServiceCategoryDTO(String name) {
 }

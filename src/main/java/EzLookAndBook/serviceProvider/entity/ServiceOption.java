@@ -21,7 +21,6 @@ public class ServiceOption {
     @ManyToOne
     @JoinColumn(name = "serviceProvider_id")
     private ServiceProvider serviceProvider;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "availability_id", nullable = false)
+    @OneToMany(mappedBy = "serviceOption", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Availability> availabilities;
 }
