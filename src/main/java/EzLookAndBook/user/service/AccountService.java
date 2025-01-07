@@ -25,7 +25,7 @@ public class AccountService {
     private final EntityMapper entityMapper;
     private final JwtService jwtService;
 
-    public AccountService(OwnerRepository ownerRepository, ClientRepository clientRepository,AdminRepository adminRepository,
+    public AccountService(OwnerRepository ownerRepository, ClientRepository clientRepository, AdminRepository adminRepository,
                           PasswordEncoder passwordEncoder, EntityMapper entityMapper, JwtService jwtService) {
         this.ownerRepository = ownerRepository;
         this.clientRepository = clientRepository;
@@ -61,6 +61,7 @@ public class AccountService {
 
         return entityMapper.mapClientToClientDTO(clientRepository.save(client));
     }
+
     public AdminDTO createAdmin(Admin admin) {
         if (adminRepository.findByEmail(admin.getEmail()).isPresent()) {
             throw new ExistsException("User with this email exist");
@@ -71,6 +72,7 @@ public class AccountService {
 
         return entityMapper.mapAdminToAdminDTO(adminRepository.save(admin));
     }
+
     public String adminAuthorization(LoginRequest loginRequest) {
         Admin registeredAdmin = adminRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() ->
                 new EntityNotFoundException("Admin not exist"));

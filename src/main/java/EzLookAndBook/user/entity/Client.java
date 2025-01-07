@@ -34,6 +34,7 @@ public class Client implements UserDetails {
     @NotBlank(message = "Password is mandatory")
     @Size(min = 6, message = "Password should have at least 6 characters")
     private String password;
+    private String city;
     private Role role;
 
     @Override

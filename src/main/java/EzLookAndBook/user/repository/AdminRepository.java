@@ -1,7 +1,6 @@
 package EzLookAndBook.user.repository;
 
 import EzLookAndBook.user.entity.Admin;
-import EzLookAndBook.user.entity.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

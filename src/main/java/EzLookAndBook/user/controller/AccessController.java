@@ -24,13 +24,6 @@ public class AccessController {
         this.accountService = accountService;
     }
 
-    @PostMapping("/owner-register")
-    public ResponseEntity<OwnerDTO> registerOwner(@Valid @RequestBody OwnerRegister ownerRegister) {
-        OwnerDTO createOwnerDTO = accountService.createOwner(ownerRegister);
-
-        return ResponseEntity.ok(createOwnerDTO);
-    }
-
     @PostMapping("/client-register")
     public ResponseEntity<ClientDTO> registerClient(@Valid @RequestBody Client client) {
         ClientDTO createClientDTO = accountService.createClient(client);
@@ -38,16 +31,23 @@ public class AccessController {
         return ResponseEntity.ok(createClientDTO);
     }
 
-    @PostMapping("/owner-login")
-    ResponseEntity<String> loginOwner(@Valid @RequestBody LoginRequest owner) {
-        String jwtToken = accountService.ownerAuthorization(owner);
+    @PostMapping("/client-login")
+    ResponseEntity<String> loginClient(@Valid @RequestBody LoginRequest client) {
+        String jwtToken = accountService.clientAuthorization(client);
 
         return ResponseEntity.ok(jwtToken);
     }
 
-    @PostMapping("/client-login")
-    ResponseEntity<String> loginClient(@Valid @RequestBody LoginRequest client) {
-        String jwtToken = accountService.clientAuthorization(client);
+    @PostMapping("/owner-register1")
+    public ResponseEntity<OwnerDTO> registerOwner(@Valid @RequestBody OwnerRegister ownerRegister) {
+        OwnerDTO createOwnerDTO = accountService.createOwner(ownerRegister);
+
+        return ResponseEntity.ok(createOwnerDTO);
+    }
+
+    @PostMapping("/owner-login")
+    ResponseEntity<String> loginOwner(@Valid @RequestBody LoginRequest owner) {
+        String jwtToken = accountService.ownerAuthorization(owner);
 
         return ResponseEntity.ok(jwtToken);
     }
