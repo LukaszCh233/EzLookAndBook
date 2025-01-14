@@ -1,6 +1,6 @@
 package EzLookAndBook.configuration;
 
-import EzLookAndBook.user.Role;
+import EzLookAndBook.account.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,13 +34,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/owner/**","/client/**", "/admin/**", "/common/**", "/access/**")
+                        .ignoringRequestMatchers("/owner/**", "/client/**", "/admin/**", "/common/**", "/access/**")
                 )
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/client/**").hasAnyRole(Role.CLIENT.name())
                         .requestMatchers("/admin/**").hasAnyRole(Role.ADMIN.name())
                         .requestMatchers("/owner/**").hasAnyRole(Role.OWNER.name())
-                        .requestMatchers("/common/**").hasAnyRole(Role.OWNER.name(), Role.ADMIN.name(),Role.CLIENT.name())
+                        .requestMatchers("/common/**").hasAnyRole(Role.OWNER.name(), Role.ADMIN.name(), Role.CLIENT.name())
                         .requestMatchers("/access/**")
                         .permitAll()
                         .anyRequest().authenticated())

@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-    @ExceptionHandler({ExistsException.class,UnauthorizedOperationException.class})
+    @ExceptionHandler({ExistsException.class, UnauthorizedOperationException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<String> handleConflictExceptions(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
