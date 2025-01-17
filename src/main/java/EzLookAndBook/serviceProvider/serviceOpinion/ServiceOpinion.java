@@ -20,11 +20,8 @@ public class ServiceOpinion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
-    @NotBlank(message = "Client name must not be blank")
     private String userName;
     private LocalDateTime localDateTime;
-    @Min(1)
-    @Max(5)
     private int rating;
     private String opinion;
     @ManyToOne(fetch = FetchType.LAZY)

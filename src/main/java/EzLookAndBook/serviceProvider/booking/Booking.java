@@ -1,4 +1,4 @@
-package EzLookAndBook.serviceProvider.booking.entity;
+package EzLookAndBook.serviceProvider.booking;
 
 import EzLookAndBook.serviceProvider.booking.Status;
 import EzLookAndBook.serviceProvider.serviceOption.ServiceOption;
@@ -24,19 +24,14 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
-
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
     private ServiceProvider serviceProvider;
-
     @ManyToOne
     @JoinColumn(name = "serviceOption_id", nullable = false)
     private ServiceOption serviceOption;
     private String number;
-
-    @NotNull
     private LocalDate appointmentDate;
-    @NotNull
     private LocalTime appointmentHour;
     private Status status;
 }

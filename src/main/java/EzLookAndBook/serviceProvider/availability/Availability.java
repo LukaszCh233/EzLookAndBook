@@ -19,7 +19,6 @@ public class Availability {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
     private LocalDateTime availableDate;
     @ElementCollection
     private List<LocalTime> availableHours;

@@ -1,9 +1,11 @@
 package EzLookAndBook.serviceProvider.businessProfile;
 
-import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategory;
-import EzLookAndBook.account.owner.VerificationStatus;
 import EzLookAndBook.account.owner.Owner;
+import EzLookAndBook.account.owner.VerificationStatus;
+import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategory;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity

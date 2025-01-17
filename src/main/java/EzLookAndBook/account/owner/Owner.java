@@ -28,12 +28,7 @@ public class Owner implements UserDetails {
     private Long id;
     private String name;
     private String lastName;
-    @Email(message = "Email should be valid")
-    @NotBlank(message = "Email is mandatory")
-    @Column(unique = true)
     private String email;
-    @NotBlank(message = "Password is mandatory")
-    @Size(min = 6, message = "Password should have at least 6 characters")
     private String password;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "business_verification_id", referencedColumnName = "id")

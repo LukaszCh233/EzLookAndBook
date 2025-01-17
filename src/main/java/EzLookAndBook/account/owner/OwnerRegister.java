@@ -12,7 +12,9 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class OwnerRegister {
+    @NotBlank(message = "Name is mandatory")
     private String name;
+    @NotBlank(message = "Last name is mandatory")
     private String lastName;
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is mandatory")

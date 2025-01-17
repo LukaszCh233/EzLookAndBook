@@ -1,10 +1,8 @@
 package EzLookAndBook.serviceProvider.serviceProvider;
 
-import EzLookAndBook.mapper.EntityMapper;
-import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategoryRepository;
-import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionRepository;
 import EzLookAndBook.account.client.Client;
 import EzLookAndBook.account.client.ClientRepository;
+import EzLookAndBook.mapper.EntityMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -13,18 +11,12 @@ import java.util.List;
 
 @Service
 public class ServiceProviderService {
-    private final ServiceOptionRepository serviceOptionRepository;
-    private final ServiceCategoryRepository serviceCategoryRepository;
     private final ServiceProviderRepository serviceProviderRepository;
     private final ClientRepository clientRepository;
     private final EntityMapper entityMapper;
 
-    public ServiceProviderService(ServiceOptionRepository serviceOptionRepository,
-                                  ServiceCategoryRepository serviceCategoryRepository,
-                                  ServiceProviderRepository serviceProviderRepository, ClientRepository clientRepository,
+    public ServiceProviderService(ServiceProviderRepository serviceProviderRepository, ClientRepository clientRepository,
                                   EntityMapper entityMapper) {
-        this.serviceOptionRepository = serviceOptionRepository;
-        this.serviceCategoryRepository = serviceCategoryRepository;
         this.serviceProviderRepository = serviceProviderRepository;
         this.clientRepository = clientRepository;
         this.entityMapper = entityMapper;

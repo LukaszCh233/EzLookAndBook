@@ -26,6 +26,7 @@ public class Client implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Name cannot be blank")
     private String name;
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is mandatory")
@@ -34,6 +35,7 @@ public class Client implements UserDetails {
     @NotBlank(message = "Password is mandatory")
     @Size(min = 6, message = "Password should have at least 6 characters")
     private String password;
+    @NotBlank(message = "City cannot be blank")
     private String city;
     private Role role;
 
