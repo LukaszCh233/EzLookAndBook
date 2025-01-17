@@ -44,7 +44,7 @@ public class AccessController {
         return ResponseEntity.ok(jwtToken);
     }
 
-    @PostMapping("/owner-register1")
+    @PostMapping("/owner-register")
     public ResponseEntity<OwnerDTO> registerOwner(@Valid @RequestBody OwnerRegister ownerRegister) {
         OwnerDTO createOwnerDTO = ownerService.createOwner(ownerRegister);
 
