@@ -1,13 +1,33 @@
 package EzLookAndBook.mapper;
 
-import EzLookAndBook.serviceProvider.dto.*;
-import EzLookAndBook.serviceProvider.entity.*;
-import EzLookAndBook.user.dto.AdminDTO;
-import EzLookAndBook.user.dto.ClientDTO;
-import EzLookAndBook.user.dto.OwnerDTO;
-import EzLookAndBook.user.entity.Admin;
-import EzLookAndBook.user.entity.Client;
-import EzLookAndBook.user.entity.Owner;
+import EzLookAndBook.serviceProvider.booking.BookingDTO;
+import EzLookAndBook.serviceProvider.booking.Booking;
+import EzLookAndBook.serviceProvider.availability.Availability;
+import EzLookAndBook.serviceProvider.availability.AvailabilityDTO;
+import EzLookAndBook.serviceProvider.businessProfile.BusinessDTO;
+import EzLookAndBook.serviceProvider.businessProfile.BusinessProfile;
+import EzLookAndBook.serviceProvider.businessProfile.BusinessProfileDTO;
+import EzLookAndBook.serviceProvider.report.ReportedOpinion;
+import EzLookAndBook.serviceProvider.report.ReportedOpinionDTO;
+import EzLookAndBook.serviceProvider.report.ReportedOpinionDetailsDTO;
+import EzLookAndBook.serviceProvider.serviceOpinion.ServiceOpinion;
+import EzLookAndBook.serviceProvider.serviceOpinion.ServiceOpinionDTO;
+import EzLookAndBook.serviceProvider.serviceOption.ServiceOption;
+import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionDTO;
+import EzLookAndBook.serviceProvider.serviceProvider.ServiceProvider;
+import EzLookAndBook.serviceProvider.serviceProvider.ServiceProviderDTO;
+import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategory;
+import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategoryDTO;
+import EzLookAndBook.account.admin.AdminDTO;
+import EzLookAndBook.account.client.ClientDTO;
+import EzLookAndBook.account.owner.OwnerDTO;
+import EzLookAndBook.account.admin.Admin;
+import EzLookAndBook.account.client.Client;
+import EzLookAndBook.account.owner.Owner;
+import EzLookAndBook.serviceProvider.support.Chat;
+import EzLookAndBook.serviceProvider.support.ChatDTO;
+import EzLookAndBook.serviceProvider.support.SupportChat;
+import EzLookAndBook.serviceProvider.support.SupportChatDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -40,8 +60,8 @@ public class EntityMapper {
     public BusinessProfileDTO mapBusinessProfileToBusinessProfileDTO(BusinessProfile businessProfile) {
         return new BusinessProfileDTO(businessProfile.getId(), businessProfile.getBusinessName(),
                 businessProfile.getBusinessAddress(), businessProfile.getCity(),
-                businessProfile.getPhoneNumber(), businessProfile.getOwner().getName(),
-                businessProfile.getOwner().getLastName(), businessProfile.getOwner().getEmail(),
+                businessProfile.getOwner().getName(), businessProfile.getOwner().getLastName()
+                ,businessProfile.getOwner().getEmail(), businessProfile.getPhoneNumber(),
                 businessProfile.getTaxId(), businessProfile.getServiceCategory().getName());
     }
 
@@ -96,4 +116,45 @@ public class EntityMapper {
     public AvailabilityDTO mapAvailabilityToAvailabilityDTO(Availability availability) {
         return new AvailabilityDTO(availability.getAvailableDate(), availability.getAvailableHours());
     }
+    public BookingDTO mapBookingToBookingDTO(Booking booking) {
+        return new BookingDTO(booking.getClient().getName(),booking.getNumber(),booking.getClient().getEmail(),
+                booking.getServiceOption().getName(),booking.getAppointmentDate(),booking.getAppointmentHour());
+    }
+    public List<BookingDTO> mapBookingListToBookingListDTO(List<Booking> bookingList) {
+        return bookingList.stream()
+                .map(this::mapBookingToBookingDTO)
+                .collect(Collectors.toList());
+    }
+    public List<ReportedOpinionDTO> mapReportedOpinionListToReportedOpinionListDTO(List<ReportedOpinion> reportedOpinionList) {
+        return reportedOpinionList.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    public ReportedOpinionDetailsDTO mapReportedOpinionDetailsToReportedOpinionDetailsDTO(ReportedOpinion reportedOpinion) {
+        return new ReportedOpinionDetailsDTO(reportedOpinion.getBusinessProfile().getId(),
+                reportedOpinion.getBusinessProfile().getBusinessName(),
+                reportedOpinion.getBusinessProfile().getOwner().getEmail(), reportedOpinion.getReason(),
+                reportedOpinion.getServiceOpinion().getId(),reportedOpinion.getServiceOpinion().getUserId(),
+                reportedOpinion.getServiceOpinion().getUserName(),reportedOpinion.getServiceOpinion().getOpinion()
+                );
+    }
+    public SupportChatDTO mapSupportChatToSupportChatDTO(SupportChat supportChat) {
+        List<ChatDTO> chatDTOS = mapChatListToChatListDTO(supportChat.getChats());
+
+        return new SupportChatDTO(supportChat.getSubject(),supportChat.getDate(),supportChat.getUserId(),
+                supportChat.getRole(),chatDTOS);
+    }
+    private ChatDTO mapChatToChatDTO(Chat chat) {
+        return new ChatDTO(chat.getPersonName(), chat.getText());
+    }
+    private List<ChatDTO> mapChatListToChatListDTO(List<Chat> chat) {
+        return chat.stream()
+                .map(this::mapChatToChatDTO)
+                .collect(Collectors.toList());
+    }
+    private ReportedOpinionDTO convertToDTO(ReportedOpinion reportedOpinion) {
+        return new ReportedOpinionDTO(reportedOpinion.getId(),reportedOpinion.getServiceOpinion().getId(),
+                reportedOpinion.getBusinessProfile().getOwner().getEmail());
+    }
+
 }
