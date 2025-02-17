@@ -1,6 +1,5 @@
 package EzLookAndBook.serviceProvider.serviceProviderCateogry;
 
-import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

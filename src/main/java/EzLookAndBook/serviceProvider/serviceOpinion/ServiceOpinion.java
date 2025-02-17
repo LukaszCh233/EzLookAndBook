@@ -2,9 +2,6 @@ package EzLookAndBook.serviceProvider.serviceOpinion;
 
 import EzLookAndBook.serviceProvider.serviceProvider.ServiceProvider;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;

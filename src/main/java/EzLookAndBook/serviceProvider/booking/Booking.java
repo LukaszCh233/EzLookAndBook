@@ -1,11 +1,9 @@
 package EzLookAndBook.serviceProvider.booking;
 
-import EzLookAndBook.serviceProvider.booking.Status;
+import EzLookAndBook.account.client.Client;
 import EzLookAndBook.serviceProvider.serviceOption.ServiceOption;
 import EzLookAndBook.serviceProvider.serviceProvider.ServiceProvider;
-import EzLookAndBook.account.client.Client;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;

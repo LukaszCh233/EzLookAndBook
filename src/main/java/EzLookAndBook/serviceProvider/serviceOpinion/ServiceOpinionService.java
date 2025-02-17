@@ -3,9 +3,6 @@ package EzLookAndBook.serviceProvider.serviceOpinion;
 import EzLookAndBook.account.client.Client;
 import EzLookAndBook.account.client.ClientRepository;
 import EzLookAndBook.mapper.EntityMapper;
-import EzLookAndBook.serviceProvider.businessProfile.BusinessProfile;
-import EzLookAndBook.serviceProvider.businessProfile.BusinessProfileRepository;
-import EzLookAndBook.serviceProvider.report.*;
 import EzLookAndBook.serviceProvider.serviceProvider.ServiceProvider;
 import EzLookAndBook.serviceProvider.serviceProvider.ServiceProviderRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,20 +17,14 @@ public class ServiceOpinionService {
     private final ServiceOpinionRepository serviceOpinionRepository;
     private final ServiceProviderRepository serviceProviderRepository;
     private final ClientRepository clientRepository;
-    private final ReportedOpinionRepository reportedOpinionRepository;
-    private final BusinessProfileRepository businessProfileRepository;
     private final EntityMapper entityMapper;
 
     public ServiceOpinionService(ServiceOpinionRepository serviceOpinionRepository,
                                  ServiceProviderRepository serviceProviderRepository,
-                                 ClientRepository clientRepository, ReportedOpinionRepository reportedOpinionRepository,
-                                 BusinessProfileRepository businessProfileRepository,
-                                 EntityMapper entityMapper) {
+                                 ClientRepository clientRepository, EntityMapper entityMapper) {
         this.serviceOpinionRepository = serviceOpinionRepository;
         this.serviceProviderRepository = serviceProviderRepository;
         this.clientRepository = clientRepository;
-        this.reportedOpinionRepository = reportedOpinionRepository;
-        this.businessProfileRepository = businessProfileRepository;
         this.entityMapper = entityMapper;
     }
 
@@ -41,9 +32,10 @@ public class ServiceOpinionService {
         String email = principal.getName();
 
         ServiceProvider serviceProvider = serviceProviderRepository.findById(serviceProviderId).
-                orElseThrow(() -> new EntityNotFoundException("Not found service provider"));
+                orElseThrow(() -> new EntityNotFoundException("Service provider not found"));
 
-        Client client = clientRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Not found client"));
+        Client client = clientRepository.findByEmail(email).orElseThrow(() ->
+                new EntityNotFoundException("Client not found"));
 
         ServiceOpinion serviceOpinion = new ServiceOpinion();
         serviceOpinion.setServiceProvider(serviceProvider);
@@ -66,17 +58,18 @@ public class ServiceOpinionService {
 
     public ServiceOpinionDTO findServiceOpinionById(Long serviceOpinionId) {
         ServiceOpinion serviceOpinion = serviceOpinionRepository.findById(serviceOpinionId).orElseThrow(() ->
-                new EntityNotFoundException("not found opinion"));
+                new EntityNotFoundException("Opinion not found"));
 
         return entityMapper.mapServiceOpinionToServiceOpinionDTO(serviceOpinion);
     }
 
     public void deleteOpinionByIdForClient(Long serviceOpinionId, Principal principal) {
         String username = principal.getName();
-        Client client = clientRepository.findByEmail(username).orElseThrow(() -> new EntityNotFoundException("Not found client"));
+        Client client = clientRepository.findByEmail(username).orElseThrow(() ->
+                new EntityNotFoundException("Client not found"));
 
         ServiceOpinion serviceOpinion = serviceOpinionRepository.findById(serviceOpinionId).orElseThrow(() ->
-                new EntityNotFoundException("Not found opinion"));
+                new EntityNotFoundException("Opinion not found"));
         if (!serviceOpinion.getUserId().equals(client.getId())) {
             throw new UnsupportedOperationException("Client is not authorized to delete this opinion");
         }
@@ -85,7 +78,7 @@ public class ServiceOpinionService {
 
     public void deleteOpinionById(Long id) {
         ServiceOpinion serviceOpinion = serviceOpinionRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Not found opinion"));
+                new EntityNotFoundException("Opinion not found"));
 
         serviceOpinionRepository.delete(serviceOpinion);
     }

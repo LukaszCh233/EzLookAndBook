@@ -25,7 +25,8 @@ public class SupportService {
     private final EntityMapper entityMapper;
 
     public SupportService(SupportRepository supportRepository, OwnerRepository ownerRepository,
-                          ClientRepository clientRepository, AdminRepository adminRepository, EntityMapper entityMapper) {
+                          ClientRepository clientRepository, AdminRepository adminRepository,
+                          EntityMapper entityMapper) {
         this.supportRepository = supportRepository;
         this.ownerRepository = ownerRepository;
         this.clientRepository = clientRepository;
@@ -59,7 +60,7 @@ public class SupportService {
 
     public SupportChatDTO findSupportChatById(Long supportChatId) {
         SupportChat supportChat = supportRepository.findById(supportChatId).orElseThrow(() ->
-                new EntityNotFoundException("chat not found"));
+                new EntityNotFoundException("Chat not found"));
 
         return entityMapper.mapSupportChatToSupportChatDTO(supportChat);
     }
@@ -79,7 +80,7 @@ public class SupportService {
         }
 
         SupportChat supportChat = supportRepository.findById(supportChatId).orElseThrow(() ->
-                new EntityNotFoundException("chat not found"));
+                new EntityNotFoundException("Chat not found"));
         supportChat.getChats().add(chat);
 
         supportRepository.save(supportChat);

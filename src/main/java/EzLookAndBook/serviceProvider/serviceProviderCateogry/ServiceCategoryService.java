@@ -2,9 +2,6 @@ package EzLookAndBook.serviceProvider.serviceProviderCateogry;
 
 import EzLookAndBook.exception.ExistsException;
 import EzLookAndBook.mapper.EntityMapper;
-import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategoryDTO;
-import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategory;
-import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +17,19 @@ public class ServiceCategoryService {
         this.entityMapper = entityMapper;
     }
 
-    public void createServiceCategory(ServiceCategory serviceCategory) {
-        if (serviceCategoryRepository.findByNameIgnoreCase(serviceCategory.getName()).isPresent()) {
+    public void createServiceCategory(ServiceCategoryRequest serviceCategoryRequest) {
+        if (serviceCategoryRepository.findByNameIgnoreCase(serviceCategoryRequest.getName()).isPresent()) {
             throw new ExistsException("Category with this name already exists");
         }
+        ServiceCategory serviceCategory = new ServiceCategory();
+        serviceCategory.setName(serviceCategoryRequest.getName());
+
         serviceCategoryRepository.save(serviceCategory);
     }
 
     public ServiceCategoryDTO findServiceCategoryById(Long categoryId) {
         ServiceCategory serviceCategory = serviceCategoryRepository.findById(categoryId).orElseThrow(() ->
-                new EntityNotFoundException("not found category"));
+                new EntityNotFoundException("Category not found"));
 
         return entityMapper.mapServiceCategoryToServiceCategoryDTO(serviceCategory);
     }

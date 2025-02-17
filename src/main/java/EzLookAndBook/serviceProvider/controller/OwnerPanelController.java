@@ -1,16 +1,20 @@
 package EzLookAndBook.serviceProvider.controller;
 
-import EzLookAndBook.serviceProvider.availability.AvailabilityDTO;
-import EzLookAndBook.serviceProvider.booking.Status;
+import EzLookAndBook.serviceProvider.availability.AvailabilityRequest;
+import EzLookAndBook.serviceProvider.availability.AvailabilityService;
 import EzLookAndBook.serviceProvider.booking.BookingDTO;
 import EzLookAndBook.serviceProvider.booking.BookingService;
+import EzLookAndBook.serviceProvider.booking.Status;
 import EzLookAndBook.serviceProvider.businessProfile.BusinessProfileDTO;
 import EzLookAndBook.serviceProvider.businessProfile.BusinessProfileService;
 import EzLookAndBook.serviceProvider.businessProfile.BusinessVerificationRequest;
 import EzLookAndBook.serviceProvider.report.ReportOpinionRequest;
 import EzLookAndBook.serviceProvider.report.ReportedOpinionService;
-import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionDTO;
+import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionRequest;
 import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionService;
+import EzLookAndBook.serviceProvider.serviceProvider.ServiceProviderDTO;
+import EzLookAndBook.serviceProvider.serviceProvider.ServiceProviderService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,21 +27,28 @@ import java.util.List;
 @RequestMapping("/owner")
 public class OwnerPanelController {
     private final ServiceOptionService serviceOptionService;
+    private final AvailabilityService availabilityService;
+    private final ServiceProviderService serviceProviderService;
     private final BusinessProfileService businessProfileService;
     private final BookingService bookingService;
     private final ReportedOpinionService reportedOpinionService;
 
-    public OwnerPanelController(ServiceOptionService serviceOptionService, BusinessProfileService businessProfileService,
-                                BookingService bookingService,
+    public OwnerPanelController(ServiceOptionService serviceOptionService, AvailabilityService availabilityService,
+                                ServiceProviderService serviceProviderService,
+                                BusinessProfileService businessProfileService, BookingService bookingService,
                                 ReportedOpinionService reportedOpinionService) {
         this.serviceOptionService = serviceOptionService;
+        this.availabilityService = availabilityService;
+        this.serviceProviderService = serviceProviderService;
         this.businessProfileService = businessProfileService;
         this.bookingService = bookingService;
         this.reportedOpinionService = reportedOpinionService;
     }
 
     @PostMapping("/businessVerification")
-    public ResponseEntity<String> sendVerificationRequest(@RequestBody BusinessVerificationRequest businessVerificationRequest, Principal principal) {
+    public ResponseEntity<String> sendVerificationRequest(@Valid @RequestBody
+                                                          BusinessVerificationRequest businessVerificationRequest,
+                                                          Principal principal) {
         businessProfileService.submitBusinessForVerification
                 (businessVerificationRequest, principal);
 
@@ -45,39 +56,50 @@ public class OwnerPanelController {
     }
 
     @GetMapping("/businessProfile")
-    public ResponseEntity<BusinessProfileDTO> displayBusinessProfile(Principal principal) {
-        BusinessProfileDTO businessProfileDTO = businessProfileService.findBusinessProfileByPrincipal(principal);
+    public ResponseEntity<List<BusinessProfileDTO>> displayBusinessProfileList(Principal principal) {
+        List<BusinessProfileDTO> businessProfileDTO = businessProfileService.findBusinessProfileListByPrincipal(principal);
 
         return ResponseEntity.ok(businessProfileDTO);
     }
 
+    @GetMapping("/serviceProvider")
+    public ResponseEntity<ServiceProviderDTO> displayServiceProviderByPrincipal(Principal principal) {
+        ServiceProviderDTO serviceProviderDTO = serviceProviderService.findServiceProviderByPrincipal(principal);
+
+        return ResponseEntity.ok(serviceProviderDTO);
+    }
+
     @PostMapping("/serviceOption")
-    public ResponseEntity<String> addServiceOptionToService(@RequestBody ServiceOptionDTO serviceOptionDTO, Principal principal) {
-        serviceOptionService.addServiceOption(serviceOptionDTO, principal);
+    public ResponseEntity<String> addServiceOptionToService(@RequestBody @Valid ServiceOptionRequest serviceOptionRequest,
+                                                            Principal principal) {
+        serviceOptionService.addServiceOption(serviceOptionRequest, principal);
 
         return ResponseEntity.ok("service option has been added");
     }
 
     @PostMapping("/availableDates/{serviceOptionId}")
     public ResponseEntity<?> addAvailableServiceDates(@PathVariable Long serviceOptionId,
-                                                      @RequestBody AvailabilityDTO availabilityDTO, Principal principal) {
-        serviceOptionService.addAvailability(serviceOptionId, availabilityDTO, principal);
+                                                      @RequestBody @Valid AvailabilityRequest availabilityRequest,
+                                                      Principal principal) {
+        availabilityService.addAvailability(serviceOptionId, availabilityRequest, principal);
 
         return ResponseEntity.ok("Available Dates has been added");
     }
 
     @PutMapping("/serviceOption/{serviceOptionId}")
-    public ResponseEntity<?> updateServiceOption(@PathVariable Long serviceOptionId, @RequestBody ServiceOptionDTO serviceOptionDTO,
+    public ResponseEntity<?> updateServiceOption(@PathVariable Long serviceOptionId,
+                                                 @RequestBody @Valid ServiceOptionRequest serviceOptionRequest,
                                                  Principal principal) {
-        serviceOptionService.updateServiceOption(serviceOptionId, serviceOptionDTO, principal);
+        serviceOptionService.updateServiceOption(serviceOptionId, serviceOptionRequest, principal);
 
         return ResponseEntity.ok("Service option has been updated");
     }
 
     @PutMapping("/availability/{serviceOptionId}")
     public ResponseEntity<?> updateAvailabilityHour(@PathVariable Long serviceOptionId,
-                                                    @RequestBody AvailabilityDTO availabilityDTO, Principal principal) {
-        serviceOptionService.updateAvailabilityHour(serviceOptionId, availabilityDTO, principal);
+                                                    @RequestBody @Valid AvailabilityRequest availabilityRequest,
+                                                    Principal principal) {
+        availabilityService.updateAvailabilityHour(serviceOptionId, availabilityRequest, principal);
 
         return ResponseEntity.ok("Hours has been updated");
     }
@@ -92,7 +114,7 @@ public class OwnerPanelController {
     @DeleteMapping("/availability/{serviceOptionId}/{availabilityId}")
     public ResponseEntity<?> deleteAvailabilityDate(@PathVariable Long serviceOptionId, @PathVariable Long availabilityId
             , Principal principal) {
-        serviceOptionService.deleteAvailabilityDate(serviceOptionId, availabilityId, principal);
+        availabilityService.deleteAvailabilityDate(serviceOptionId, availabilityId, principal);
 
         return ResponseEntity.ok("Date has been deleted");
     }
@@ -101,13 +123,13 @@ public class OwnerPanelController {
     public ResponseEntity<?> deleteAvailabilityHour(@PathVariable Long serviceOptionId, @PathVariable Long availabilityId,
                                                     @PathVariable LocalTime hour, Principal principal) {
 
-        serviceOptionService.deleteAvailabilityHour(serviceOptionId, availabilityId, hour, principal);
+        availabilityService.deleteAvailabilityHour(serviceOptionId, availabilityId, hour, principal);
 
         return ResponseEntity.ok("Hour has been deleted");
     }
 
     @PostMapping("reportedOpinion")
-    public ResponseEntity<String> sendReportOpinionToAdmin(@RequestBody ReportOpinionRequest reportOpinionRequest,
+    public ResponseEntity<String> sendReportOpinionToAdmin(@Valid @RequestBody ReportOpinionRequest reportOpinionRequest,
                                                            Principal principal) {
         reportedOpinionService.reportOpinionToAdmin(reportOpinionRequest, principal);
 

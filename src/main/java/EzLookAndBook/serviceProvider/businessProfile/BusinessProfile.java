@@ -4,8 +4,6 @@ import EzLookAndBook.account.owner.Owner;
 import EzLookAndBook.account.owner.VerificationStatus;
 import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategory;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
@@ -30,5 +28,5 @@ public class BusinessProfile {
     @JoinColumn(name = "category_id", nullable = false)
     private ServiceCategory serviceCategory;
     @Enumerated(EnumType.STRING)
-    private VerificationStatus status = VerificationStatus.PENDING;
+    private VerificationStatus verificationStatus;
 }

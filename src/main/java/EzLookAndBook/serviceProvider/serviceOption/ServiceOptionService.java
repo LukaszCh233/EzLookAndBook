@@ -1,18 +1,14 @@
 package EzLookAndBook.serviceProvider.serviceOption;
 
-import EzLookAndBook.mapper.EntityMapper;
-import EzLookAndBook.serviceProvider.availability.AvailabilityDTO;
-import EzLookAndBook.serviceProvider.availability.Availability;
-import EzLookAndBook.serviceProvider.serviceProvider.ServiceProvider;
-import EzLookAndBook.serviceProvider.availability.AvailabilityRepository;
-import EzLookAndBook.serviceProvider.serviceProvider.ServiceProviderRepository;
 import EzLookAndBook.account.owner.Owner;
 import EzLookAndBook.account.owner.OwnerRepository;
+import EzLookAndBook.mapper.EntityMapper;
+import EzLookAndBook.serviceProvider.serviceProvider.ServiceProvider;
+import EzLookAndBook.serviceProvider.serviceProvider.ServiceProviderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -20,21 +16,18 @@ public class ServiceOptionService {
     private final ServiceOptionRepository serviceOptionRepository;
     private final ServiceProviderRepository serviceProviderRepository;
     private final OwnerRepository ownerRepository;
-    private final AvailabilityRepository availabilityRepository;
     private final EntityMapper entityMapper;
 
     public ServiceOptionService(ServiceOptionRepository serviceOptionRepository,
                                 ServiceProviderRepository serviceProviderRepository,
-                                OwnerRepository ownerRepository, AvailabilityRepository availabilityRepository,
-                                EntityMapper entityMapper) {
+                                OwnerRepository ownerRepository, EntityMapper entityMapper) {
         this.serviceOptionRepository = serviceOptionRepository;
         this.serviceProviderRepository = serviceProviderRepository;
         this.ownerRepository = ownerRepository;
-        this.availabilityRepository = availabilityRepository;
         this.entityMapper = entityMapper;
     }
 
-    public void addServiceOption(ServiceOptionDTO serviceOptionDTO, Principal principal) {
+    public void addServiceOption(ServiceOptionRequest serviceOptionRequest, Principal principal) {
         String email = principal.getName();
 
         Owner owner = ownerRepository.findByEmail(email)
@@ -44,82 +37,30 @@ public class ServiceOptionService {
                 new EntityNotFoundException("Service provider not found"));
 
         ServiceOption serviceOption = new ServiceOption();
-        serviceOption.setName(serviceOptionDTO.name());
-        serviceOption.setDescription(serviceOptionDTO.description());
-        serviceOption.setPrice(serviceOptionDTO.price());
+        serviceOption.setName(serviceOptionRequest.getName());
+        serviceOption.setDescription(serviceOptionRequest.getDescription());
+        serviceOption.setPrice(serviceOptionRequest.getPrice());
         serviceOption.setServiceProvider(serviceProvider);
         serviceProvider.getServiceOptions().add(serviceOption);
 
         serviceProviderRepository.save(serviceProvider);
     }
 
-    public void addAvailability(Long serviceOptionId, AvailabilityDTO availabilityDTO, Principal principal) {
-        ServiceOption serviceOption = findServiceOption(serviceOptionId, principal);
-
-        Availability availability = new Availability();
-        availability.setAvailableDate(availabilityDTO.availableDate());
-        availability.setAvailableHours(availabilityDTO.availableHours());
-        availability.setServiceOption(serviceOption);
-
-        availabilityRepository.save(availability);
-
-        serviceOption.getAvailabilities().add(availability);
-        serviceOptionRepository.save(serviceOption);
-    }
-
-    public void updateServiceOption(Long serviceOptionId, ServiceOptionDTO serviceOption, Principal principal) {
+    public void updateServiceOption(Long serviceOptionId, ServiceOptionRequest serviceOptionRequest,
+                                    Principal principal) {
         ServiceOption serviceOptionToUpdate = findServiceOption(serviceOptionId, principal);
 
-        serviceOptionToUpdate.setName(serviceOption.name());
-        serviceOptionToUpdate.setDescription(serviceOption.description());
-        serviceOptionToUpdate.setPrice(serviceOption.price());
+        serviceOptionToUpdate.setName(serviceOptionRequest.getName());
+        serviceOptionToUpdate.setDescription(serviceOptionRequest.getDescription());
+        serviceOptionToUpdate.setPrice(serviceOptionRequest.getPrice());
 
         serviceOptionRepository.save(serviceOptionToUpdate);
-    }
-
-    public void updateAvailabilityHour(Long serviceOptionId, AvailabilityDTO availabilityDTO, Principal principal) {
-        ServiceOption serviceOption = findServiceOption(serviceOptionId, principal);
-
-        Availability availability = serviceOption.getAvailabilities().stream()
-                .filter(a -> a.getAvailableDate().equals(availabilityDTO.availableDate()))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Availability for the given date not found"));
-
-        availability.setAvailableHours(availabilityDTO.availableHours());
-
-        availabilityRepository.save(availability);
     }
 
     public void deleteServiceOption(Long serviceOptionId, Principal principal) {
         ServiceOption serviceOption = findServiceOption(serviceOptionId, principal);
 
         serviceOptionRepository.delete(serviceOption);
-    }
-
-    public void deleteAvailabilityDate(Long serviceOptionId, Long availabilityId, Principal principal) {
-        ServiceOption serviceOption = findServiceOption(serviceOptionId, principal);
-
-        Availability availability = serviceOption.getAvailabilities().stream()
-                .filter(a -> a.getId().equals(availabilityId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Availability not found"));
-
-        serviceOption.getAvailabilities().remove(availability);
-        serviceOptionRepository.save(serviceOption);
-        availabilityRepository.delete(availability);
-    }
-
-    public void deleteAvailabilityHour(Long serviceOptionId, Long availabilityId, LocalTime hour, Principal principal) {
-        ServiceOption serviceOption = findServiceOption(serviceOptionId, principal);
-
-        Availability availability = serviceOption.getAvailabilities().stream()
-                .filter(a -> a.getId().equals(availabilityId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Availability not found"));
-
-        availability.getAvailableHours().removeIf(time -> time.equals(hour));
-
-        availabilityRepository.save(availability);
     }
 
     public List<ServiceOptionDTO> findAllServiceOption(Long serviceProviderId) {
@@ -130,16 +71,17 @@ public class ServiceOptionService {
         return entityMapper.mapServiceOptionListToServiceOptionListDTO(serviceOptionList);
     }
 
-    private ServiceOption findServiceOption(Long serviceOptionId, Principal principal) {
+    public ServiceOption findServiceOption(Long serviceOptionId, Principal principal) {
         String email = principal.getName();
 
         Owner owner = ownerRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Owner not found"));
 
         ServiceProvider serviceProvider = serviceProviderRepository.findByOwnerId(owner.getId()).orElseThrow(() ->
-                new EntityNotFoundException("not found service provider"));
+                new EntityNotFoundException("Service provider not found"));
 
         return serviceOptionRepository.findByServiceProviderIdAndId(
-                serviceProvider.getId(), serviceOptionId).orElseThrow(() -> new EntityNotFoundException("co"));
+                serviceProvider.getId(), serviceOptionId).orElseThrow(() ->
+                new EntityNotFoundException("Service option not found"));
     }
 }

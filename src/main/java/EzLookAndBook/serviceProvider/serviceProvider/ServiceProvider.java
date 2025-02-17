@@ -34,6 +34,6 @@ public class ServiceProvider {
     @JoinColumn(name = "category_id", nullable = false)
     private ServiceCategory serviceCategory;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "serviceProvider", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServiceOption> serviceOptions;
 }

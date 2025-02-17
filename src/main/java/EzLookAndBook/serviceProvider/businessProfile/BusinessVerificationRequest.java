@@ -1,7 +1,7 @@
 package EzLookAndBook.serviceProvider.businessProfile;
 
-import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategory;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -23,5 +23,6 @@ public class BusinessVerificationRequest {
     @NotBlank(message = "Tax ID cannot be blank")
     @Size(max = 20, message = "Tax ID cannot exceed 20 characters")
     private String taxId;
-    private ServiceCategory serviceCategory;
+    @NotNull(message = "Service category id cannot be null")
+    private Long serviceCategoryId;
 }

@@ -1,14 +1,16 @@
 package EzLookAndBook.account.client;
 
+import EzLookAndBook.account.Role;
+import EzLookAndBook.account.input.LoginRequest;
 import EzLookAndBook.configuration.JwtService;
 import EzLookAndBook.exception.ExistsException;
 import EzLookAndBook.exception.UnauthorizedOperationException;
 import EzLookAndBook.mapper.EntityMapper;
-import EzLookAndBook.account.Role;
-import EzLookAndBook.account.input.LoginRequest;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.security.Principal;
 
 @Service
 public class ClientService {
@@ -44,5 +46,13 @@ public class ClientService {
             throw new UnauthorizedOperationException("Incorrect password or email");
         }
         return jwtService.generateToken(registeredClient);
+    }
+
+    public ClientDTO getClientInfo(Principal principal) {
+        String email = principal.getName();
+        Client client = clientRepository.findByEmail(email).orElseThrow(() ->
+                new EntityNotFoundException("client not found"));
+
+        return entityMapper.mapClientToClientDTO(client);
     }
 }

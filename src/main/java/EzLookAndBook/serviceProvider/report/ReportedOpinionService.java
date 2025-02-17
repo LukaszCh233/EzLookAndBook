@@ -40,7 +40,7 @@ public class ReportedOpinionService {
         reportedOpinion.setBusinessProfile(businessProfile);
         reportedOpinion.setServiceOpinion(serviceOpinion);
         reportedOpinion.setStatus(ReportStatus.REPORTED);
-        reportedOpinion.setReason(reportedOpinion.getReason());
+        reportedOpinion.setReason(reportOpinionRequest.getReason());
 
         reportedOpinionRepository.save(reportedOpinion);
     }
@@ -53,22 +53,22 @@ public class ReportedOpinionService {
 
     public ReportedOpinionDetailsDTO findReportedOpinionDetails(Long reportedOpinionId) {
         ReportedOpinion reportedOpinion = reportedOpinionRepository.findById(reportedOpinionId).orElseThrow(() ->
-                new EntityNotFoundException("Not found opinion"));
+                new EntityNotFoundException("Opinion not found"));
 
         return entityMapper.mapReportedOpinionDetailsToReportedOpinionDetailsDTO(reportedOpinion);
     }
 
     public void deleteReportAndReportedOpinion(Long reportedOpinionId) {
         ReportedOpinion reportedOpinion = reportedOpinionRepository.findById(reportedOpinionId).orElseThrow(() ->
-                new EntityNotFoundException("Not found opinion"));
+                new EntityNotFoundException("Opinion not found"));
 
-        serviceOpinionRepository.delete(reportedOpinion.getServiceOpinion());
         reportedOpinionRepository.delete(reportedOpinion);
+        serviceOpinionRepository.delete(reportedOpinion.getServiceOpinion());
     }
 
     public void deleteReport(Long reportedOpinionId) {
         ReportedOpinion reportedOpinion = reportedOpinionRepository.findById(reportedOpinionId).orElseThrow(() ->
-                new EntityNotFoundException("Not found opinion"));
+                new EntityNotFoundException("Opinion not found"));
 
         reportedOpinionRepository.delete(reportedOpinion);
     }

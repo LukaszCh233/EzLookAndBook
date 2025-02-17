@@ -1,13 +1,13 @@
 package EzLookAndBook.account.controller;
 
+import EzLookAndBook.account.admin.Admin;
 import EzLookAndBook.account.admin.AdminDTO;
 import EzLookAndBook.account.admin.AdminService;
+import EzLookAndBook.account.client.Client;
 import EzLookAndBook.account.client.ClientDTO;
 import EzLookAndBook.account.client.ClientService;
-import EzLookAndBook.account.owner.OwnerDTO;
-import EzLookAndBook.account.admin.Admin;
-import EzLookAndBook.account.client.Client;
 import EzLookAndBook.account.input.LoginRequest;
+import EzLookAndBook.account.owner.OwnerDTO;
 import EzLookAndBook.account.owner.OwnerRegister;
 import EzLookAndBook.account.owner.OwnerService;
 import jakarta.validation.Valid;
@@ -59,7 +59,7 @@ public class AccessController {
     }
 
     @PostMapping("/admin-register")
-    public ResponseEntity<AdminDTO> registerAdmin(@RequestBody Admin admin) {
+    public ResponseEntity<AdminDTO> registerAdmin(@Valid @RequestBody Admin admin) {
         AdminDTO createAdminDTO = adminService.createAdmin(admin);
 
         return ResponseEntity.ok(createAdminDTO);

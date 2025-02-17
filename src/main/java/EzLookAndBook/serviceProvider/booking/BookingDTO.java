@@ -4,5 +4,5 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record BookingDTO(String name, String number, String email, String serviceOption, LocalDate date,
-                         LocalTime hour) {
+                         LocalTime hour, Status status) {
 }

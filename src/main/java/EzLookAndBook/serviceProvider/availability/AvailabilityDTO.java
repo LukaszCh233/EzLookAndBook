@@ -1,8 +1,8 @@
 package EzLookAndBook.serviceProvider.availability;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-public record AvailabilityDTO(LocalDateTime availableDate, List<LocalTime> availableHours) {
+public record AvailabilityDTO(String serviceOptionName, LocalDate availableDate, List<LocalTime> availableHours) {
 }

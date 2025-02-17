@@ -1,6 +1,5 @@
 package EzLookAndBook.serviceProvider.serviceProvider;
 
-import EzLookAndBook.serviceProvider.serviceProvider.ServiceProvider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface ServiceProviderRepository extends JpaRepository<ServiceProvider, Long> {
-
     List<ServiceProvider> findByServiceCategoryNameAndCityIgnoreCase(String categoryName, String city);
 
     @Query("SELECT sp FROM ServiceProvider sp WHERE sp.serviceCategory.id = :id AND LOWER(sp.city) = LOWER(:city)")
@@ -21,4 +19,13 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
     List<ServiceProvider> findByServiceOptionNameAndCityIgnoreCase(@Param("name") String name, @Param("city") String city);
 
     Optional<ServiceProvider> findByOwnerId(Long id);
+
+    List<ServiceProvider> findByServiceCategoryId(Long id);
+
+    Optional<ServiceProvider> findByIdAndCityIgnoreCase(Long id, String city);
+
+    List<ServiceProvider> findByServiceCategoryName(String categoryName);
+
+    List<ServiceProvider> findByServiceOptionsName(String optionName);
+
 }

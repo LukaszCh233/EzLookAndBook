@@ -1,10 +1,10 @@
 package EzLookAndBook.configuration;
 
 import EzLookAndBook.account.admin.Admin;
-import EzLookAndBook.account.client.Client;
-import EzLookAndBook.account.owner.Owner;
 import EzLookAndBook.account.admin.AdminRepository;
+import EzLookAndBook.account.client.Client;
 import EzLookAndBook.account.client.ClientRepository;
+import EzLookAndBook.account.owner.Owner;
 import EzLookAndBook.account.owner.OwnerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

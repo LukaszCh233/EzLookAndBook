@@ -1,14 +1,14 @@
 package EzLookAndBook.serviceProvider.controller;
 
+import EzLookAndBook.account.client.ClientDTO;
+import EzLookAndBook.account.client.ClientService;
 import EzLookAndBook.serviceProvider.booking.BookingDTO;
 import EzLookAndBook.serviceProvider.booking.BookingRequest;
 import EzLookAndBook.serviceProvider.booking.BookingService;
 import EzLookAndBook.serviceProvider.serviceOpinion.OpinionRequest;
 import EzLookAndBook.serviceProvider.serviceOpinion.ServiceOpinionService;
-import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionDTO;
-import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionService;
-import EzLookAndBook.serviceProvider.serviceProvider.ServiceProviderDTO;
 import EzLookAndBook.serviceProvider.serviceProvider.ServiceProviderService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,58 +20,29 @@ import java.util.List;
 @RequestMapping("/client")
 public class ClientPanelController {
     private final ServiceProviderService serviceProviderService;
-    private final ServiceOptionService serviceOptionService;
+    private final ClientService clientService;
     private final ServiceOpinionService serviceOpinionService;
     private final BookingService bookingService;
 
-    public ClientPanelController(ServiceProviderService serviceProviderService, ServiceOptionService serviceOptionService,
+    public ClientPanelController(ServiceProviderService serviceProviderService, ClientService clientService,
                                  ServiceOpinionService serviceOpinionService, BookingService bookingService) {
         this.serviceProviderService = serviceProviderService;
-        this.serviceOptionService = serviceOptionService;
+        this.clientService = clientService;
         this.serviceOpinionService = serviceOpinionService;
         this.bookingService = bookingService;
     }
 
-    @PostMapping("/userCity/{city}")
+    @PutMapping("/userCity/{city}")
     public ResponseEntity<String> setUserCityForClient(@PathVariable String city, Principal principal) {
         serviceProviderService.setCityForClient(city, principal);
         return ResponseEntity.ok(city);
     }
 
-    @GetMapping("/serviceProvider/{serviceProviderId}")
-    public ResponseEntity<ServiceProviderDTO> displayServiceProviderById(@PathVariable Long serviceProviderId, Principal principal) {
-        ServiceProviderDTO serviceProviderDTO = serviceProviderService.findServiceProviderById(serviceProviderId, principal);
+    @GetMapping("/client")
+    public ResponseEntity<ClientDTO> displayClientInfo(Principal principal) {
+        ClientDTO client = clientService.getClientInfo(principal);
 
-        return ResponseEntity.ok(serviceProviderDTO);
-    }
-
-    @GetMapping("/serviceProvider/category/{categoryId}")
-    public ResponseEntity<List<ServiceProviderDTO>> displayServiceProviderListByCategoryId(@PathVariable Long categoryId, Principal principal) {
-        List<ServiceProviderDTO> serviceProviderDTOList = serviceProviderService.findServiceProviderByCategoryId(categoryId, principal);
-
-        return ResponseEntity.ok(serviceProviderDTOList);
-    }
-
-    @GetMapping("/serviceProvider/categoryName/{categoryName}")
-    public ResponseEntity<List<ServiceProviderDTO>> displayServiceProviderListByCategoryName(@PathVariable String categoryName, Principal principal) {
-        List<ServiceProviderDTO> serviceProviderDTOList = serviceProviderService.findServiceProviderByCategoryName(categoryName, principal);
-
-        return ResponseEntity.ok(serviceProviderDTOList);
-    }
-
-    //not work
-    @GetMapping("/serviceProvider/option/{serviceOption}")
-    public ResponseEntity<List<ServiceProviderDTO>> displayServiceProviderListByServiceOption(@PathVariable String serviceOption, Principal principal) {
-        List<ServiceProviderDTO> serviceProviderDTOList = serviceProviderService.findServiceProviderByServiceOption(serviceOption, principal);
-
-        return ResponseEntity.ok(serviceProviderDTOList);
-    }
-
-    @GetMapping("/serviceOptions/{serviceProviderId}")
-    public ResponseEntity<List<ServiceOptionDTO>> displayServiceOptions(@PathVariable Long serviceProviderId) {
-        List<ServiceOptionDTO> serviceOptionDTOList = serviceOptionService.findAllServiceOption(serviceProviderId);
-
-        return ResponseEntity.ok(serviceOptionDTOList);
+        return ResponseEntity.ok(client);
     }
 
     @DeleteMapping("/serviceOpinion/{opinionId}")
@@ -83,7 +54,7 @@ public class ClientPanelController {
 
     @PostMapping("/serviceOpinion/{serviceProviderId}")
     public ResponseEntity<String> addServiceOpinion(@PathVariable Long serviceProviderId,
-                                                    @RequestBody OpinionRequest opinionRequest,
+                                                    @RequestBody @Valid OpinionRequest opinionRequest,
                                                     Principal principal) {
         serviceOpinionService.addOpinion(serviceProviderId, opinionRequest, principal);
 
@@ -91,7 +62,8 @@ public class ClientPanelController {
     }
 
     @PostMapping("/booking")
-    public ResponseEntity<String> bookingServiceOption(@RequestBody BookingRequest bookingRequest, Principal principal) {
+    public ResponseEntity<String> bookingServiceOption(@RequestBody @Valid BookingRequest bookingRequest,
+                                                       Principal principal) {
         bookingService.createReservation(bookingRequest, principal);
 
         return ResponseEntity.ok("Successful booking");

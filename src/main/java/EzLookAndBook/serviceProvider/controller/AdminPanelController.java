@@ -1,14 +1,16 @@
 package EzLookAndBook.serviceProvider.controller;
 
 import EzLookAndBook.serviceProvider.businessProfile.BusinessDTO;
+import EzLookAndBook.serviceProvider.businessProfile.BusinessOwnerDTO;
 import EzLookAndBook.serviceProvider.businessProfile.BusinessProfileDTO;
 import EzLookAndBook.serviceProvider.businessProfile.BusinessProfileService;
 import EzLookAndBook.serviceProvider.report.ReportedOpinionDTO;
 import EzLookAndBook.serviceProvider.report.ReportedOpinionDetailsDTO;
 import EzLookAndBook.serviceProvider.report.ReportedOpinionService;
 import EzLookAndBook.serviceProvider.serviceOpinion.ServiceOpinionService;
-import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategory;
+import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategoryRequest;
 import EzLookAndBook.serviceProvider.serviceProviderCateogry.ServiceCategoryService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +27,8 @@ public class AdminPanelController {
 
     public AdminPanelController(BusinessProfileService businessProfileService,
                                 ServiceCategoryService serviceCategoryService,
-                                ServiceOpinionService serviceOpinionService, ReportedOpinionService reportedOpinionService) {
+                                ServiceOpinionService serviceOpinionService,
+                                ReportedOpinionService reportedOpinionService) {
         this.businessProfileService = businessProfileService;
         this.serviceCategoryService = serviceCategoryService;
         this.serviceOpinionService = serviceOpinionService;
@@ -33,7 +36,7 @@ public class AdminPanelController {
     }
 
     @PostMapping("/serviceCategory")
-    public ResponseEntity<String> addServiceCategoryToService(@RequestBody ServiceCategory serviceCategory) {
+    public ResponseEntity<String> addServiceCategoryToService(@RequestBody @Valid ServiceCategoryRequest serviceCategory) {
         serviceCategoryService.createServiceCategory(serviceCategory);
         return ResponseEntity.ok("Category has been added");
     }
@@ -52,11 +55,25 @@ public class AdminPanelController {
         return ResponseEntity.ok(businessVerificationDTOList);
     }
 
-    @PostMapping("/verification/{businessVerificationId}")
+    @GetMapping("/businessList/rejected")
+    public ResponseEntity<List<BusinessDTO>> displayRejectedBusinessList() {
+        List<BusinessDTO> businessVerificationDTOList = businessProfileService.findAllRejectedBusiness();
+
+        return ResponseEntity.ok(businessVerificationDTOList);
+    }
+
+    @PostMapping("/verification/approve/{businessVerificationId}")
     public ResponseEntity<String> approveBusinessVerification(@PathVariable Long businessVerificationId) {
         businessProfileService.approveVerification(businessVerificationId);
 
-        return ResponseEntity.ok("successful verification");
+        return ResponseEntity.ok("Successful verification");
+    }
+
+    @PostMapping("/verification/reject/{businessVerificationId}")
+    public ResponseEntity<String> rejectBusinessVerification(@PathVariable Long businessVerificationId) {
+        businessProfileService.rejectVerification(businessVerificationId);
+
+        return ResponseEntity.ok("Successful rejected");
     }
 
     @GetMapping("/businessProfile/{businessProfileId}")
@@ -73,7 +90,7 @@ public class AdminPanelController {
         return ResponseEntity.ok("Opinion has been deleted");
     }
 
-    @GetMapping("/reportedOpinion")
+    @GetMapping("/reportedOpinions")
     public ResponseEntity<List<ReportedOpinionDTO>> displayReportedOpinions() {
         List<ReportedOpinionDTO> reportedOpinions = reportedOpinionService.findReportedOpinions();
 
@@ -82,9 +99,17 @@ public class AdminPanelController {
 
     @GetMapping("/reportedOpinion/{reportedOpinionId}")
     public ResponseEntity<ReportedOpinionDetailsDTO> displayReportedOpinionDetails(@PathVariable Long reportedOpinionId) {
-        ReportedOpinionDetailsDTO reportedOpinionDetails = reportedOpinionService.findReportedOpinionDetails(reportedOpinionId);
+        ReportedOpinionDetailsDTO reportedOpinionDetails = reportedOpinionService
+                .findReportedOpinionDetails(reportedOpinionId);
 
         return ResponseEntity.ok(reportedOpinionDetails);
+    }
+
+    @GetMapping("/businessOwner")
+    public ResponseEntity<List<BusinessOwnerDTO>> displayBusinessOwnerList() {
+        List<BusinessOwnerDTO> businessOwnerList = businessProfileService.findBusinessOwnerList();
+
+        return ResponseEntity.ok(businessOwnerList);
     }
 
     @DeleteMapping("reportedOpinion/{reportedOpinionId}")

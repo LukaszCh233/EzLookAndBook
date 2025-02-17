@@ -1,21 +1,16 @@
 package EzLookAndBook.serviceProvider.booking;
 
-import EzLookAndBook.serviceProvider.booking.Status;
-import EzLookAndBook.serviceProvider.booking.BookingDTO;
-import EzLookAndBook.serviceProvider.booking.Booking;
-import EzLookAndBook.serviceProvider.booking.BookingRequest;
-import EzLookAndBook.serviceProvider.booking.BookingRepository;
+import EzLookAndBook.account.client.Client;
+import EzLookAndBook.account.client.ClientRepository;
+import EzLookAndBook.account.owner.Owner;
+import EzLookAndBook.account.owner.OwnerRepository;
 import EzLookAndBook.mapper.EntityMapper;
 import EzLookAndBook.serviceProvider.availability.Availability;
-import EzLookAndBook.serviceProvider.serviceOption.ServiceOption;
-import EzLookAndBook.serviceProvider.serviceProvider.ServiceProvider;
 import EzLookAndBook.serviceProvider.availability.AvailabilityRepository;
+import EzLookAndBook.serviceProvider.serviceOption.ServiceOption;
 import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionRepository;
+import EzLookAndBook.serviceProvider.serviceProvider.ServiceProvider;
 import EzLookAndBook.serviceProvider.serviceProvider.ServiceProviderRepository;
-import EzLookAndBook.account.client.Client;
-import EzLookAndBook.account.owner.Owner;
-import EzLookAndBook.account.client.ClientRepository;
-import EzLookAndBook.account.owner.OwnerRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +43,8 @@ public class BookingService {
     public void createReservation(BookingRequest bookingRequest, Principal principal) {
         String email = principal.getName();
 
-        Client client = clientRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("not found user"));
+        Client client = clientRepository.findByEmail(email).orElseThrow(() ->
+                new EntityNotFoundException("User not found"));
 
         ServiceProvider serviceProvider = serviceProviderRepository.findById(bookingRequest.getServiceProviderId())
                 .orElseThrow(() -> new EntityNotFoundException("Service not found"));
@@ -78,7 +74,7 @@ public class BookingService {
 
     public BookingDTO findBookingById(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
-                new EntityNotFoundException("Not found booking"));
+                new EntityNotFoundException("Booking not found"));
 
         return entityMapper.mapBookingToBookingDTO(booking);
     }
@@ -103,21 +99,29 @@ public class BookingService {
         return entityMapper.mapBookingListToBookingListDTO(bookingList);
     }
 
-    public void changeReservationStatus(Long bookingId,Status status) {
+    public void changeReservationStatus(Long bookingId, Status status) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new EntityNotFoundException("Booking not found"));
-
         booking.setStatus(status);
+        if (status.equals(Status.CONFIRMED)) {
+            Availability availability = availabilityRepository.findByServiceOption_idAndAvailableDate(
+                            booking.getServiceOption().getId(), booking.getAppointmentDate())
+                    .orElseThrow(() -> new EntityNotFoundException("Date not available"));
+            availability.getAvailableHours().remove(booking.getAppointmentHour());
+
+            availabilityRepository.save(availability);
+        }
         bookingRepository.save(booking);
     }
 
     private List<BookingDTO> findBookingsByStatusAndPrincipal(Status status, Principal principal) {
         String email = principal.getName();
 
-        Owner owner = ownerRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Not found owner"));
+        Owner owner = ownerRepository.findByEmail(email).orElseThrow(() ->
+                new EntityNotFoundException("Owner not found"));
 
         ServiceProvider serviceProvider = serviceProviderRepository.findByOwnerId(owner.getId()).orElseThrow(() ->
-                new EntityNotFoundException("Not found service provider fot this owner id"));
+                new EntityNotFoundException("Service provider not found for this owner id"));
 
         List<Booking> bookingList = bookingRepository.findByStatusAndServiceProviderId(status, serviceProvider.getId());
         if (bookingList.isEmpty()) {

@@ -9,8 +9,9 @@ import java.util.Optional;
 
 @Service
 public interface BusinessProfileRepository extends JpaRepository<BusinessProfile, Long> {
-
-    List<BusinessProfile> findByStatus(VerificationStatus verificationStatus);
+    List<BusinessProfile> findByVerificationStatus(VerificationStatus verificationStatus);
 
     Optional<BusinessProfile> findByOwnerEmail(String email);
+
+    List<BusinessProfile> findAllByOwnerEmail(String email);
 }
