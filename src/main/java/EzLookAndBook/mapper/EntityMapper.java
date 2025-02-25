@@ -145,9 +145,9 @@ public class EntityMapper {
     }
 
     public ReportedOpinionDetailsDTO mapReportedOpinionDetailsToReportedOpinionDetailsDTO(ReportedOpinion reportedOpinion) {
-        return new ReportedOpinionDetailsDTO(reportedOpinion.getBusinessProfile().getId(),
-                reportedOpinion.getBusinessProfile().getBusinessName(),
-                reportedOpinion.getBusinessProfile().getOwner().getEmail(), reportedOpinion.getReason(),
+        return new ReportedOpinionDetailsDTO(reportedOpinion.getServiceProvider().getId(),
+                reportedOpinion.getServiceProvider().getName(),
+                reportedOpinion.getServiceProvider().getOwner().getEmail(), reportedOpinion.getReason(),
                 reportedOpinion.getServiceOpinion().getId(), reportedOpinion.getServiceOpinion().getUserId(),
                 reportedOpinion.getServiceOpinion().getUserName(), reportedOpinion.getServiceOpinion().getOpinion()
         );
@@ -184,7 +184,7 @@ public class EntityMapper {
 
     private ReportedOpinionDTO convertToDTO(ReportedOpinion reportedOpinion) {
         return new ReportedOpinionDTO(reportedOpinion.getId(), reportedOpinion.getServiceOpinion().getId(),
-                reportedOpinion.getBusinessProfile().getOwner().getEmail());
+                reportedOpinion.getServiceProvider().getOwner().getEmail());
     }
 
 

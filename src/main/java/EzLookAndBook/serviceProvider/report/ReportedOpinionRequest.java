@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class ReportOpinionRequest {
+public class ReportedOpinionRequest {
     @NotNull(message = "Id cannot be null")
     private Long serviceOpinionId;
     @NotBlank(message = "Reason cannot be blank")

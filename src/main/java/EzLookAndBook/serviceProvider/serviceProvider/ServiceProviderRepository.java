@@ -28,4 +28,6 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
 
     List<ServiceProvider> findByServiceOptionsName(String optionName);
 
+    Optional<ServiceProvider> findByOwnerEmail(String email);
+
 }

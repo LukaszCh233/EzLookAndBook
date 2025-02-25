@@ -5,6 +5,7 @@ import EzLookAndBook.serviceProvider.serviceOption.ServiceOption;
 import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionRepository;
 import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -36,6 +37,7 @@ public class AvailabilityService {
         return entityMapper.mapAvailabilityListToAvailabilityListDTO(availability);
     }
 
+    @Transactional
     public void addAvailability(Long serviceOptionId, AvailabilityRequest availabilityRequest, Principal principal) {
         ServiceOption serviceOption = serviceOptionService.findServiceOption(serviceOptionId, principal);
 

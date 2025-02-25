@@ -28,7 +28,7 @@ public class ServiceProvider {
     @NotBlank(message = "Phone number cannot be blank")
     private String numberPhone;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private Owner owner;
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)

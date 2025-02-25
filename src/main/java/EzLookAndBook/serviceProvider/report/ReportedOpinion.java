@@ -1,7 +1,7 @@
 package EzLookAndBook.serviceProvider.report;
 
-import EzLookAndBook.serviceProvider.businessProfile.BusinessProfile;
 import EzLookAndBook.serviceProvider.serviceOpinion.ServiceOpinion;
+import EzLookAndBook.serviceProvider.serviceProvider.ServiceProvider;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,8 +16,8 @@ public class ReportedOpinion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "business_profile_id", nullable = false)
-    private BusinessProfile businessProfile;
+    @JoinColumn(name = "serviceProvider_id", nullable = false)
+    private ServiceProvider serviceProvider;
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "service_opinion_id", nullable = false)
     private ServiceOpinion serviceOpinion;

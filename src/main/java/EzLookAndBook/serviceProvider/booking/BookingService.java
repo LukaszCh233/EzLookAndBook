@@ -93,7 +93,7 @@ public class BookingService {
         List<Booking> bookingList = bookingRepository.findByClientEmail(email);
 
         if (bookingList.isEmpty()) {
-            throw new EntityNotFoundException("No bookings found for client with email: " + email);
+            throw new EntityNotFoundException("Bookings not found for client with email: " + email);
         }
 
         return entityMapper.mapBookingListToBookingListDTO(bookingList);
@@ -113,6 +113,24 @@ public class BookingService {
         }
         bookingRepository.save(booking);
     }
+
+    public void rejectReservation(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
+                new EntityNotFoundException("Booking not found"));
+        if (booking.getStatus().equals(Status.CONFIRMED)) {
+            booking.setStatus(Status.REJECTED);
+            Availability availability = availabilityRepository.findByServiceOption_idAndAvailableDate(
+                            booking.getServiceOption().getId(), booking.getAppointmentDate())
+                    .orElseThrow(() -> new EntityNotFoundException("Date not available"));
+            availability.getAvailableHours().add(booking.getAppointmentHour());
+
+            availabilityRepository.save(availability);
+        } else if (booking.getStatus().equals(Status.PENDING)) {
+            booking.setStatus(Status.REJECTED);
+        }
+        bookingRepository.save(booking);
+    }
+
 
     private List<BookingDTO> findBookingsByStatusAndPrincipal(Status status, Principal principal) {
         String email = principal.getName();

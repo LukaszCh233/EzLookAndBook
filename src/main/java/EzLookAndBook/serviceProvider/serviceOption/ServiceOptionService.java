@@ -6,6 +6,7 @@ import EzLookAndBook.mapper.EntityMapper;
 import EzLookAndBook.serviceProvider.serviceProvider.ServiceProvider;
 import EzLookAndBook.serviceProvider.serviceProvider.ServiceProviderRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -27,6 +28,7 @@ public class ServiceOptionService {
         this.entityMapper = entityMapper;
     }
 
+    @Transactional
     public void addServiceOption(ServiceOptionRequest serviceOptionRequest, Principal principal) {
         String email = principal.getName();
 

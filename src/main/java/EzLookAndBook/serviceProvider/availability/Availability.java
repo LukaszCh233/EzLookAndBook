@@ -19,7 +19,6 @@ public class Availability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate availableDate;
-    @ElementCollection
     private List<LocalTime> availableHours;
     @ManyToOne
     @JoinColumn(name = "service_option_id", nullable = false)

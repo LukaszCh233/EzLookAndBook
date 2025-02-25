@@ -8,7 +8,7 @@ import EzLookAndBook.serviceProvider.booking.Status;
 import EzLookAndBook.serviceProvider.businessProfile.BusinessProfileDTO;
 import EzLookAndBook.serviceProvider.businessProfile.BusinessProfileService;
 import EzLookAndBook.serviceProvider.businessProfile.BusinessVerificationRequest;
-import EzLookAndBook.serviceProvider.report.ReportOpinionRequest;
+import EzLookAndBook.serviceProvider.report.ReportedOpinionRequest;
 import EzLookAndBook.serviceProvider.report.ReportedOpinionService;
 import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionRequest;
 import EzLookAndBook.serviceProvider.serviceOption.ServiceOptionService;
@@ -129,9 +129,9 @@ public class OwnerPanelController {
     }
 
     @PostMapping("reportedOpinion")
-    public ResponseEntity<String> sendReportOpinionToAdmin(@Valid @RequestBody ReportOpinionRequest reportOpinionRequest,
+    public ResponseEntity<String> sendReportOpinionToAdmin(@Valid @RequestBody ReportedOpinionRequest reportedOpinionRequest,
                                                            Principal principal) {
-        reportedOpinionService.reportOpinionToAdmin(reportOpinionRequest, principal);
+        reportedOpinionService.reportOpinionToAdmin(reportedOpinionRequest, principal);
 
         return ResponseEntity.ok("Report has been sent");
     }
@@ -155,5 +155,12 @@ public class OwnerPanelController {
         bookingService.changeReservationStatus(bookingId, status);
 
         return ResponseEntity.ok("Reservation " + status);
+    }
+
+    @PutMapping("/booking/{bookingId}")
+    public ResponseEntity<String> rejectReservation(@PathVariable Long bookingId) {
+        bookingService.rejectReservation(bookingId);
+
+        return ResponseEntity.ok("Reservation has been rejected");
     }
 }
