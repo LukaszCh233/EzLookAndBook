@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface ServiceOpinionRepository extends JpaRepository<ServiceOpinion, Long> {
     List<ServiceOpinion> findByServiceProviderId(Long serviceProviderId);
 }

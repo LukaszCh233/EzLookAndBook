@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public interface BusinessProfileRepository extends JpaRepository<BusinessProfile, Long> {
     List<BusinessProfile> findByVerificationStatus(VerificationStatus verificationStatus);
 

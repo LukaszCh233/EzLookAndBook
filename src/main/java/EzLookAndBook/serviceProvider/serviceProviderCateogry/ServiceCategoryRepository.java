@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
 public interface ServiceCategoryRepository extends JpaRepository<ServiceCategory, Long> {
     @Query("SELECT c FROM ServiceCategory c WHERE LOWER(c.name) = LOWER(:name)")
     Optional<ServiceCategory> findByNameIgnoreCase(@Param("name") String name);

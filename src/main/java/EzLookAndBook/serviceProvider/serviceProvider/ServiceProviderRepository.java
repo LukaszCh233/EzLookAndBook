@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface ServiceProviderRepository extends JpaRepository<ServiceProvider, Long> {
     List<ServiceProvider> findByServiceCategoryNameAndCityIgnoreCase(String categoryName, String city);
 
